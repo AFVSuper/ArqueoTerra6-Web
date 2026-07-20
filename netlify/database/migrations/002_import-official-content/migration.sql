@@ -1,3 +1,4 @@
+BEGIN;
 INSERT INTO roles (id, code, name, description) VALUES
 (1, 'SUPERADMIN', 'Superadmin', 'Control completo de contenido, publicación y usuarios.'),
 (2, 'EDITOR', 'Editor', 'Crea, edita y elimina contenido en borrador.'),
@@ -259,3 +260,4 @@ SELECT setval(pg_get_serial_sequence('tags', 'id'), COALESCE((SELECT MAX(id) FRO
 SELECT setval(pg_get_serial_sequence('faq_entries', 'id'), COALESCE((SELECT MAX(id) FROM faq_entries), 1), true);
 SELECT setval(pg_get_serial_sequence('installation_sections', 'id'), COALESCE((SELECT MAX(id) FROM installation_sections), 1), true);
 SELECT setval(pg_get_serial_sequence('media_assets', 'id'), COALESCE((SELECT MAX(id) FROM media_assets), 1), true);
+COMMIT;
