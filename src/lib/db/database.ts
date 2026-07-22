@@ -5,18 +5,34 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
 
-let pool: Pool | null = null;
-let database: ReturnType<typeof drizzle<typeof schema>> | null = null;
+type Database = ReturnType<typeof drizzle<typeof schema>>;
 
-function connectionString() {
+type DatabaseGlobals = typeof globalThis & {
+  arqueoDatabasePool?: Pool;
+  arqueoDatabase?: Database;
+};
+
+const databaseGlobals = globalThis as DatabaseGlobals;
+
+function resolveConnectionString() {
   if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
   return getConnectionString();
 }
 
-export function getDb() {
-  if (!database) {
-    pool = new Pool({ connectionString: connectionString() });
-    database = drizzle(pool, { schema });
+export function getDb(): Database {
+  if (!databaseGlobals.arqueoDatabase) {
+    const pool =
+      databaseGlobals.arqueoDatabasePool ??
+      new Pool({
+        connectionString: resolveConnectionString(),
+        max: 3,
+        idleTimeoutMillis: 10_000,
+        connectionTimeoutMillis: 10_000,
+      });
+
+    databaseGlobals.arqueoDatabasePool = pool;
+    databaseGlobals.arqueoDatabase = drizzle(pool, { schema });
   }
-  return database;
+
+  return databaseGlobals.arqueoDatabase;
 }

@@ -6,9 +6,16 @@ import { mediaAssets } from "@/lib/db/schema";
 import { canEditContent } from "@/lib/permissions";
 import { slugify } from "@/lib/utils";
 
+export const runtime = "nodejs";
+
 const allowedTypes: Record<string, string> = {
-  "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
 };
+
+const MEDIA_STORE = "arqueoterra-media";
 
 export async function POST(request: Request) {
   const user = await getCurrentUser();
@@ -19,14 +26,45 @@ export async function POST(request: Request) {
   const file = formData.get("file");
   const title = String(formData.get("title") ?? "").trim();
   const altText = String(formData.get("altText") ?? "").trim();
-  if (!(file instanceof File) || !title || !altText) return new Response("Faltan el archivo, el título o el texto alternativo.", { status: 400 });
+
+  if (!(file instanceof File) || !title || !altText) {
+    return new Response("Faltan el archivo, el título o el texto alternativo.", {
+      status: 400,
+    });
+  }
+
   const extension = allowedTypes[file.type];
   if (!extension) return new Response("Formato no permitido.", { status: 415 });
-  if (file.size > 8 * 1024 * 1024) return new Response("La imagen supera 8 MB.", { status: 413 });
+  if (file.size > 8 * 1024 * 1024) {
+    return new Response("La imagen supera 8 MB.", { status: 413 });
+  }
 
-  const key = `uploads/${new Date().toISOString().slice(0, 7)}/${slugify(title) || "imagen"}-${randomBytes(4).toString("hex")}.${extension}`;
-  await getStore("arqueoterra-media", { consistency: "strong" }).set(key, await file.arrayBuffer());
-  const url = `/api/media/${encodeURIComponent(key)}`;
-  await getDb().insert(mediaAssets).values({ title, url, altText, sourceType: "upload", mimeType: file.type, createdById: user.id });
+  const monthFolder = new Date().toISOString().slice(0, 7);
+  const fileName = `${slugify(title) || "imagen"}-${randomBytes(4).toString("hex")}.${extension}`;
+  const key = `uploads/${monthFolder}/${fileName}`;
+
+  await getStore({ name: MEDIA_STORE, consistency: "strong" }).set(key, file, {
+    metadata: {
+      contentType: file.type,
+      title,
+      altText,
+    },
+  });
+
+  const encodedKey = key
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+  const url = `/api/media/${encodedKey}`;
+
+  await getDb().insert(mediaAssets).values({
+    title,
+    url,
+    altText,
+    sourceType: "upload",
+    mimeType: file.type,
+    createdById: user.id,
+  });
+
   return Response.redirect(new URL("/admin/medios?uploaded=1", request.url), 303);
 }

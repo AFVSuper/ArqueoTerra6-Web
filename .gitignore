@@ -42,7 +42,7 @@ yarn-error.log*
 # vercel
 .vercel
 
-# Netlify runtime data is managed by the platform.
+# Netlify local runtime and database data
 .netlify
 
 # typescript

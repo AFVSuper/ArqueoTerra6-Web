@@ -29,7 +29,10 @@ export function RecipeCard({ recipe }: RecipeCardProps) {
       </div>
       <div className="p-5 sm:p-6">
         {recipe.image ? (
-          <img src={recipe.image} alt={`Crafteo de ${recipe.outputName}`} className="mb-0 max-h-96 w-full border border-[var(--line)] bg-[#f3f8f6] object-contain" />
+          <img src={recipe.image} alt={`Crafteo de ${recipe.outputName}`} className="mb-0 max-h-96 w-full  object-contain"
+          style={{
+      background: "linear-gradient(180deg, #63d2f7, #0c304e)",
+    }} />
         ) : null}
         {/* <div className="grid gap-3 sm:grid-cols-3">
           {recipe.inputs.map((input, index) => (

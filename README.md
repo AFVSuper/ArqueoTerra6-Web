@@ -1,61 +1,64 @@
-# Brújula Cúbica
+# Brújula Cúbica — versión preparada para Netlify
 
-Guía web y CMS propio para un servidor modded de Minecraft. La parte pública organiza el contenido por mod y ofrece fichas de objetos, recetas, búsqueda, instalación y FAQ. El panel privado permite al staff redactar, revisar y publicar todo el contenido.
+Guía web y CMS propio para un servidor modded de Minecraft. Esta variante está adaptada para un despliegue serverless en Netlify:
 
-## Arranque local
+- PostgreSQL persistente mediante Netlify Database.
+- Imágenes nuevas del CMS mediante Netlify Blobs.
+- Migraciones automáticas en `netlify/database/migrations`.
+- Contenido actual importado desde la antigua base SQLite.
 
-Requisitos: Node.js 20.9 o superior.
+La explicación completa está en [`GUIA_MIGRACION_NETLIFY.md`](./GUIA_MIGRACION_NETLIFY.md).
+
+## Requisitos
+
+- Node.js 22.
+- npm.
+- Cuenta de GitHub.
+- Cuenta de Netlify.
+
+## Instalar dependencias
 
 ```powershell
-npm.cmd install
-Copy-Item .env.example .env.local
-npm.cmd run dev
+npm install
 ```
 
-Abre `http://localhost:3000`. El comando de desarrollo prepara automáticamente la base SQLite y los datos de demostración.
+## Desarrollo local con el entorno de Netlify
 
-Si no cambias las variables antes del primer arranque, el acceso local inicial es:
+Primera terminal:
 
-- Usuario: `admin`
-- Contraseña: `cambiar-esta-clave`
+```powershell
+npm run netlify:dev
+```
 
-Cambia esa contraseña inmediatamente desde `CMS > Mi perfil`. `ADMIN_PASSWORD` solo se usa cuando se crea la cuenta inicial; no reemplaza contraseñas existentes.
+Segunda terminal, la primera vez o cuando añadas una migración:
 
-## Contenido y roles
+```powershell
+npx netlify database migrations apply
+```
 
-- `Editor`: crea, modifica y elimina contenido; sus cambios se guardan como borrador.
-- `Revisor`: edita y puede publicar; no elimina contenido.
-- `Superadmin`: tiene todos los permisos y crea cuentas de staff.
+Después abre la dirección que indique Netlify Dev, normalmente `http://localhost:8888`.
 
-No existe registro público. Cada Server Action, ruta de subida y consulta privada vuelve a validar sesión y rol en el servidor.
-
-Los campos complejos siguen formatos sencillos:
-
-- Galerías y pasos: una entrada por línea.
-- Etiquetas: separadas por comas.
-- Stats: una línea por dato, por ejemplo `Daño: 11`.
-- Ingredientes: una línea con `Nombre | cantidad`.
-
-## Imágenes
-
-En `CMS > Medios` se puede subir JPG, PNG, WebP o GIF de hasta 8 MB, o registrar una URL externa. Después la URL aparece como sugerencia en los formularios de mods, objetos y recetas.
-
-Los archivos subidos se guardan en `public/uploads` y la base local en `.data/minecraft-guide.db`; ambos están ignorados por Git. Haz copia de seguridad de esas dos rutas.
+> `npm run dev` inicia únicamente Next.js. Para probar Netlify Database y Netlify Blobs utiliza `npm run netlify:dev`.
 
 ## Comandos
 
 ```powershell
-npm.cmd run dev       # desarrollo y semilla automática
-npm.cmd run test      # pruebas de búsqueda y permisos
-npm.cmd run lint      # revisión estática
-npm.cmd run build     # compilación de producción
-npm.cmd run start     # servidor de producción
-npm.cmd run db:seed   # prepara esquema, cuenta y demo sin duplicar datos
-npm.cmd run db:studio # inspección visual con Drizzle Studio
+npm run netlify:dev      # Next.js + servicios locales de Netlify
+npm run build            # compilación de producción
+npm run lint             # revisión estática
+npm run test             # pruebas
+npm run db:export-sqlite # regenera la migración de datos desde .data
+npm run db:seed          # semilla manual contra PostgreSQL
+npm run db:studio        # Drizzle Studio; necesita DATABASE_URL
 ```
 
-## Despliegue
+## Almacenamiento
 
-Esta versión está orientada a un servidor Node persistente, VPS o contenedor con volumen. Conserva `.data` y `public/uploads` entre despliegues. Para varias instancias o un entorno serverless, migra SQLite a Postgres y los uploads a almacenamiento de objetos antes de escalar horizontalmente.
+- Los datos del CMS viven en PostgreSQL.
+- Las imágenes subidas desde el CMS viven en el store `arqueoterra-media` de Netlify Blobs.
+- Las imágenes oficiales incluidas en `public/images` siguen versionadas con GitHub.
+- `.data/minecraft-guide.db` queda únicamente como copia local y origen para regenerar la migración inicial. La aplicación desplegada no la utiliza.
 
-Configura como mínimo `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `NEXT_PUBLIC_SERVER_NAME`, `NEXT_PUBLIC_SERVER_ADDRESS` y `NEXT_PUBLIC_SITE_URL` antes del primer arranque de producción.
+## Seguridad
+
+Las sesiones SQLite antiguas no se importan. Al publicar tendrás que iniciar sesión de nuevo. El usuario administrador actual sí se conserva para mantener el acceso al CMS; cambia su contraseña tras el primer despliegue, especialmente si el repositorio de GitHub es público.

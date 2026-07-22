@@ -13,7 +13,7 @@ const sections = [
 
 export default async function HomePage() {
   const counts = await getPublicContentCounts();
-  const serverAddress = process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "play.tuservidor.net";
+  const serverAddress = process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "Próximamente";
 
   return (
     <>
@@ -24,7 +24,7 @@ export default async function HomePage() {
           <div className="relative z-10">
             <span className="inline-flex items-center gap-2 border border-[#8fd8e3]/25 bg-[#8fd8e3]/10 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#8fd8e3]"><Compass className="size-4" /> Guía oficial del servidor</span>
             <h1 className="font-display mt-7 max-w-3xl whitespace-nowrap text-[clamp(2.3rem,6.5vw,5rem)] leading-[0.82] tracking-[-0.01em]">ArqueoTerraSMP<span className="text-[#8fd8e3]"> VI</span></h1>
-            <p className="mt-7 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">El catálogo del mod propio del servidor. Cuatro secciones, 86 objetos y una guía que iremos completando con sus funciones, obtención y crafteos confirmados.</p>
+            <p className="mt-7 max-w-2xl text-base leading-8 text-white/65 sm:text-lg">El catálogo del mod propio del servidor. Cuatro secciones, varios objetos y una guía que iremos completando con sus cambios, funciones, obtención y crafteos.</p>
             <Link href="/mods/arqueoterra-smp-6" className="mt-8 inline-flex min-h-12 items-center gap-3 bg-[#82d7ff] px-5 text-sm font-black text-[#061723] transition-colors duration-300 ease-out hover:bg-white">Explorar el catálogo <ArrowRight className="size-4" /></Link>
             <div className="mt-6"><ServerAddress address={serverAddress} /></div>
           </div>

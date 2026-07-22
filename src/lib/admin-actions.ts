@@ -416,8 +416,14 @@ export async function deleteMediaAction(id: number) {
     .limit(1);
 
   if (asset?.sourceType === "upload" && asset.url.startsWith("/api/media/")) {
-    await getStore("arqueoterra-media", { consistency: "strong" })
-      .delete(decodeURIComponent(asset.url.slice("/api/media/".length)))
+    const key = asset.url
+      .slice("/api/media/".length)
+      .split("/")
+      .map((segment) => decodeURIComponent(segment))
+      .join("/");
+
+    await getStore({ name: "arqueoterra-media", consistency: "strong" })
+      .delete(key)
       .catch(() => undefined);
   }
 

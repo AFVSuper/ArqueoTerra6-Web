@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
 
+// El contenido vive en PostgreSQL y debe leerse en tiempo de ejecución.
 export const dynamic = "force-dynamic";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {

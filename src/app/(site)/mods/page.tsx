@@ -24,7 +24,7 @@ export default async function ModsPage() {
             Un mod. Cuatro colecciones.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/60">
-            ArqueoTerraSMP 6 concentra todo el contenido propio del servidor. Explora sus objetos por sección y completa cada ficha desde el CMS.
+            ArqueoTerraSMP 6 concentra todo el contenido propio del servidor. Explora sus objetos por sección.
           </p>
         </div>
       </section>

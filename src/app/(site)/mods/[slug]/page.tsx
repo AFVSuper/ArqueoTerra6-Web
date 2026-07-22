@@ -38,7 +38,8 @@ export default async function ModDetailPage({ params }: ModPageProps) {
   return (
     <>
       <section className="relative overflow-hidden bg-[#061723] py-12 text-white sm:py-18">
-        <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_78%_20%,#0f91b7_0,transparent_30rem)]" />
+        <div className="absolute inset-0 -z-0 bg-[radial-gradient(circle_at_30%_50%,rgba(15,145,183,.32),transparent_28rem)]" />
+        <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(143,216,227,.15)_1px,transparent_1px),linear-gradient(90deg,rgba(143,216,227,.15)_1px,transparent_1px)] [background-size:34px_34px]" />
         <div className="page-wrap relative">
           <nav className="flex flex-wrap items-center gap-2 text-xs font-bold text-white/45" aria-label="Migas de pan">
             <Link href="/">Inicio</Link><ChevronRight className="size-3" />
@@ -60,7 +61,7 @@ export default async function ModDetailPage({ params }: ModPageProps) {
                 <span className="inline-flex items-center gap-2"><Wrench className="size-4 text-[#82d7ff]" /> {mod.recipes.length} recetas destacadas</span>
               </div>
             </div>
-            <MediaFrame src={mod.coverImage} alt={`Portada de ${mod.title}`} className="aspect-[16/10] min-h-0 border border-white/15 shadow-[12px_12px_0_rgba(15,145,183,.22)]" priority label="Portada editable del mod" />
+            <MediaFrame src={mod.coverImage} alt={`Portada de ${mod.title}`} gradient = "linear-gradient(180deg, #61b5d1, #081124)" className="aspect-[16/10] min-h-0 shadow-[12px_12px_0_rgba(15,145,183,.22)]" priority label="Portada editable del mod" />
           </div>
         </div>
       </section>

@@ -82,7 +82,7 @@ export default async function ItemDetailPage({ params }: ItemPageProps) {
             <div>
               <span className="eyebrow">Descripción</span>
               {/* <h2 className="section-heading mt-4">Qué es y qué hace.</h2> */}
-              <p className="text-prose mt-7 text-lg leading-9 text-[var(--muted)]">{item.description}</p>
+              <p className="text-prose mt-7 text-lg leading-9 text-[var(--ink)]">{item.description}</p>
               {item.functionDescription ? (
                 <div className="mt-8 border-l-4 border-[#08749a] bg-[#dff2f0] p-6">
                   <h3 className="font-display flex items-center gap-3 text-2xl"><Sparkles className="size-6 text-[var(--ocean)]" /> Función especial</h3>
@@ -113,8 +113,10 @@ export default async function ItemDetailPage({ params }: ItemPageProps) {
               { icon: Lightbulb, title: "Consejos", content: item.tips },
             ].filter((section) => section.content).map((section) => (
               <article key={section.title} className="border border-[var(--line)] bg-white p-6 shadow-[5px_5px_0_#d5dfdc]">
+                <div className="flex items-center gap-2">
                 <section.icon className="size-7 text-[var(--ocean)]" />
-                <h2 className="font-display mt-5 text-2xl">{section.title}</h2>
+                <h2 className="font-display mt-1 text-2xl">{section.title}</h2>
+                </div>
                 <p className="text-prose mt-3 text-sm leading-7 text-[var(--muted)]">{section.content}</p>
               </article>
             ))}
@@ -160,7 +162,7 @@ export default async function ItemDetailPage({ params }: ItemPageProps) {
                       padded
                       gradient = "linear-gradient(135deg, #63d2f7, #0c304e)"
                     />
-                    <Link href={`/items/${related.slug}`} className="group flex flex-col justify-center bg-white p-5 transition hover:border-[#08749a]/50 hover:shadow-[5px_5px_0_#d5dfdc]">
+                    <Link key={related.id} href={`/items/${related.slug}`} className="group flex flex-col justify-center bg-white p-5 transition hover:border-[#08749a]/50 hover:shadow-[5px_5px_0_#d5dfdc]">
                       <strong className="font-display text-xl group-hover:text-[var(--ocean)]">{related.name}</strong>
                       <p className="mt-2 line-clamp-2 text-sm leading-6 text-[var(--muted)]">{related.summary}</p>
                     </Link> </article>
